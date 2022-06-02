@@ -19,6 +19,9 @@ def lagrange_data_plot(csv_file: str, split:int = 2):
         if mid_points != 0:
             step = (len(points) - 1) // (mid_points + 1)
 
+        if step == 0:
+            raise ValueError(f"Provided split is too big, max {len(points)}")
+
         split_points = x[0::step]
 
         f = lagrange_interpolation(points, split)
@@ -29,7 +32,7 @@ def lagrange_data_plot(csv_file: str, split:int = 2):
                  label="interpolacja Lagrange'a")
         plt.scatter(split_points, [f(i) for i in split_points], color="red", label="węzły interpolacji")
         plt.xlabel(r"$XD$")
-        plt.ylabel(r"$\sum_{i=0}^{\inf}$")
+        plt.ylabel(r"$\sum_{i=0}^{\infty}$")
         plt.title(csv_file)
         plt.legend()
         plt.grid()
