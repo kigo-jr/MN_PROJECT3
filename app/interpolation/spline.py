@@ -16,7 +16,7 @@ def cubic_spline_interpolation(points: List[Point], split: int = 2) -> Callable[
         n: int  = len(points)
         # n points, gives n-1 intervals, which gives 4(n-1) equations
         # matrix A is of size (4(n-1)) x (4(n-1)) and (4(n-1)) elements inside of vectors x and b
-        # x = [a_0, b_0, c_0, d_0, ..., a_{n-1}, b_{n-1}, c_{n-1}, d_{n-1}]
+        # x = [a_0, b_0, c_0, d_0, ..., a_{n-1}, b_{n-1}, c_{n-1}, d_{n-1}]3
 
         A = matrix.zeros(4*(n-1))
         b = vector.zeros(4*(n-1))
