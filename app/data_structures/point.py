@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 
 class Point:
@@ -27,3 +27,6 @@ class Point:
     def y(self, y: float) -> None:
         self._y = y
 
+    @property
+    def tuple(self) -> Tuple[float, float]:
+        return self.x, self.y

@@ -1,5 +1,5 @@
 from typing import Callable, List
-from data_stuctures import Point
+from data_structures import Point
 
 def lagrange_interpolation_function(points: List[Point]) -> Callable[[float], float]:
     def f(x: float) -> float:

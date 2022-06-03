@@ -1,1 +1,2 @@
 from interpolation.lagrange import lagrange_interpolation
+from interpolation.spline import cubic_spline_interpolation
