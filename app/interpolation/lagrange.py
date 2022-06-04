@@ -23,7 +23,7 @@ def lagrange_interpolation(points: List[Point], split: int = 2):
     if mid_points != 0:
         step = (len(points) - 1) // (mid_points + 1)
 
-    lagrange = lagrange_interpolation_function([point for point in points][0::step])
+    lagrange: Callable[[float], float] = lagrange_interpolation_function([point for point in points][0::step])
 
     return lagrange
 
