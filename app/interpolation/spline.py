@@ -44,7 +44,7 @@ def cubic_spline_interpolation(points: List[Point], split: int = 2):
     if mid_points != 0:
         step = (len(points) - 1) // (mid_points + 1)
 
-    interpolation: Callable[[float], float] = cubic_spline_interpolation_function([point for point in points][0::step])
+    interpolation: Callable[[float], float] = cubic_spline_interpolation_function([point for point in points][0::step][:-1] + [points[-1]])
     return interpolation
 
 

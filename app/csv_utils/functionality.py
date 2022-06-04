@@ -6,8 +6,12 @@ import csv
 
 def lagrange_data_plot(csv_file: str, split:int = 2):
     with open(csv_file, "r") as data:
-        points: List[List[str]] = csv.reader(data)
-        points = [[float(point[0]), float(point[1])] for point in points]
+        points = csv.reader(data)
+        points: List[List[str]] = [[point[0], point[1]] for point in points]
+        try:
+            points = [[float(point[0]), float(point[1])] for point in points]
+        except ValueError:
+            points = [[float(point[0]), float(point[1])] for point in points[1:]]
         points = [Point.from_list(point) for point in points]
 
         x = [point.x for point in points]
@@ -21,7 +25,7 @@ def lagrange_data_plot(csv_file: str, split:int = 2):
         if step == 0:
             raise ValueError(f"Provided split is too big, max {len(points)}")
 
-        split_points = x[0::step]
+        split_points = x[0::step][:-1] + [x[-1]]
 
         f = lagrange_interpolation(points, split)
 
@@ -39,8 +43,12 @@ def lagrange_data_plot(csv_file: str, split:int = 2):
 
 def cubic_spline_data_plot(csv_file: str, split:int = 2):
     with open(csv_file, "r") as data:
-        points: List[List[str]] = csv.reader(data)
-        points = [[float(point[0]), float(point[1])] for point in points]
+        points = csv.reader(data)
+        points: List[List[str]] = [[point[0], point[1]] for point in points]
+        try:
+            points = [[float(point[0]), float(point[1])] for point in points]
+        except ValueError:
+            points = [[float(point[0]), float(point[1])] for point in points[1:]]
         points = [Point.from_list(point) for point in points]
 
         x = [point.x for point in points]
@@ -54,17 +62,17 @@ def cubic_spline_data_plot(csv_file: str, split:int = 2):
         if step == 0:
             raise ValueError(f"Provided split is too big, max {len(points)}")
 
-        split_points = x[0::step]
+        split_points = x[0::step][:-1] + [x[-1]]
 
         f = cubic_spline_interpolation(points, split)
 
         plt.plot(x, y, label="pomiary")
-        plt.plot([split_points[0] + i * 0.01 * (split_points[-1] - split_points[0]) for i in range(101)],\
-                 [f(i) for i in [split_points[0] + i * 0.01 * (split_points[-1] - split_points[0]) for i in range(101)]],\
+        plt.plot([split_points[0] + i * 0.001 * (split_points[-1] - split_points[0]) for i in range(1001)],\
+                 [f(i) for i in [split_points[0] + i * 0.001 * (split_points[-1] - split_points[0]) for i in range(1001)]],\
                  label="interpolacja splajnami")
         plt.scatter(split_points, [f(i) for i in split_points], color="red", label="węzły interpolacji")
-        plt.xlabel(r"$XD$")
-        plt.ylabel(r"$\sum_{i=0}^{\infty}$")
+        plt.xlabel(r"$x [m]$")
+        plt.ylabel(r"$y [m]$")
         plt.title(csv_file)
         plt.legend()
         plt.grid()

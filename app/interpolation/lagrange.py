@@ -3,8 +3,7 @@ from data_structures import Point
 
 def lagrange_interpolation_function(points: List[Point]) -> Callable[[float], float]:
     def f(x: float) -> float:
-        result = 0
-        n = len(points)
+        result: float = 0.0
 
         for point_i in points:
             base: float = 1.0
@@ -23,7 +22,7 @@ def lagrange_interpolation(points: List[Point], split: int = 2):
     if mid_points != 0:
         step = (len(points) - 1) // (mid_points + 1)
 
-    lagrange: Callable[[float], float] = lagrange_interpolation_function([point for point in points][0::step])
+    lagrange: Callable[[float], float] = lagrange_interpolation_function([point for point in points][0::step] + [points[-1]])
 
     return lagrange
 
