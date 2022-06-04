@@ -4,7 +4,28 @@ from interpolation import lagrange_interpolation, cubic_spline_interpolation
 import matplotlib.pyplot as plt
 import csv
 
-def lagrange_data_plot(csv_file: str, split:int = 2):
+def plot_data(csv_file: str) -> None:
+    with open(csv_file, "r") as data:
+        points = csv.reader(data)
+        points: List[List[str]] = [[point[0], point[1]] for point in points]
+        try:
+            points = [[float(point[0]), float(point[1])] for point in points]
+        except ValueError:
+            points = [[float(point[0]), float(point[1])] for point in points[1:]]
+        points = [Point.from_list(point) for point in points]
+
+        x = [point.x for point in points]
+        y = [point.y for point in points]
+
+        plt.plot(x, y, label="pomiary")
+        plt.xlabel(r"dystans $[m]$")
+        plt.ylabel(r"wysokość $[m]$")
+        plt.title(csv_file)
+        plt.legend()
+        plt.grid()
+        plt.show()
+
+def lagrange_data_plot(csv_file: str, split:int = 2) -> None:
     with open(csv_file, "r") as data:
         points = csv.reader(data)
         points: List[List[str]] = [[point[0], point[1]] for point in points]
@@ -34,14 +55,14 @@ def lagrange_data_plot(csv_file: str, split:int = 2):
                  [f(i) for i in [split_points[0] + i * 0.01 * (split_points[-1] - split_points[0]) for i in range(101)]],\
                  label="interpolacja Lagrange'a")
         plt.scatter(split_points, [f(i) for i in split_points], color="red", label="węzły interpolacji")
-        plt.xlabel(r"$XD$")
-        plt.ylabel(r"$\sum_{i=0}^{\infty}$")
+        plt.xlabel(r"dystans $[m]$")
+        plt.ylabel(r"wysokość $[m]$")
         plt.title(csv_file)
         plt.legend()
         plt.grid()
         plt.show()
 
-def cubic_spline_data_plot(csv_file: str, split:int = 2):
+def cubic_spline_data_plot(csv_file: str, split:int = 2) -> None:
     with open(csv_file, "r") as data:
         points = csv.reader(data)
         points: List[List[str]] = [[point[0], point[1]] for point in points]
@@ -71,8 +92,8 @@ def cubic_spline_data_plot(csv_file: str, split:int = 2):
                  [f(i) for i in [split_points[0] + i * 0.001 * (split_points[-1] - split_points[0]) for i in range(1001)]],\
                  label="interpolacja splajnami")
         plt.scatter(split_points, [f(i) for i in split_points], color="red", label="węzły interpolacji")
-        plt.xlabel(r"$x [m]$")
-        plt.ylabel(r"$y [m]$")
+        plt.xlabel(r"dystans $[m]$")
+        plt.ylabel(r"wysokość $[m]$")
         plt.title(csv_file)
         plt.legend()
         plt.grid()
