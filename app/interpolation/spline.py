@@ -2,6 +2,7 @@ from typing import Callable, List
 from data_structures import matrix
 from data_structures import vector
 from data_structures import Point
+from random import sample
 
 def cubic_spline_interpolation_function(points: List[Point]) -> Callable[[float], float]:
     n: int = len(points)
@@ -32,19 +33,24 @@ def cubic_spline_interpolation_function(points: List[Point]) -> Callable[[float]
                 i = index
                 break
 
-        value = z_list[i] / (6*h_list[i]) * (x_list[i+1] - x)**3 + z_list[i+1]/(6*h_list[i]) * (x-x_list[i]) ** 3\
-              + (y_list[i+1] / h_list[i] - z_list[i+1] * h_list[i] / 6) * (x - x_list[i]) + (y_list[i] / h_list[i] - z_list[i] * h_list[i] / 6) * (x_list[i+1] - x)
+        value = z_list[i] / (6*h_list[i]) * (x_list[i+1] - x)**3\
+              + z_list[i+1]/(6*h_list[i]) * (x-x_list[i]) ** 3\
+              + (y_list[i+1] / h_list[i] - z_list[i+1] * h_list[i] / 6) * (x - x_list[i])\
+              + (y_list[i] / h_list[i] - z_list[i] * h_list[i] / 6) * (x_list[i+1] - x)
         return value
 
     return interpolation
 
-def cubic_spline_interpolation(points: List[Point], split: int = 2):
+def cubic_spline_interpolation(points: List[Point], split: int = 2, even: bool=True):
     mid_points: int = split - 2
     step: int = len(points) - 1
+
     if mid_points != 0:
         step = (len(points) - 1) // (mid_points + 1)
-
-    interpolation: Callable[[float], float] = cubic_spline_interpolation_function([point for point in points][0::step][:-1] + [points[-1]])
-    return interpolation
-
-
+    if even:
+        cubic_spline: Callable[[float], float] = cubic_spline_interpolation_function([point for point in points][0::step] + [points[-1]])
+    else:
+        mid_sample: List[Point] = sample(points[1:-1], mid_points)
+        mid_sample = sorted(mid_sample, lambda point: point.x)
+        cubic_spline: Callable[[float], float] = cubic_spline_interpolation_function([points[0]] + mid_points + [points[-1]])
+    return cubic_spline

@@ -1,7 +1,10 @@
 from typing import List
+from interpolation.lagrange import lagrange_interpolation_function
+from interpolation.spline import cubic_spline_interpolation_function
 from data_structures import Point
 from interpolation import lagrange_interpolation, cubic_spline_interpolation
 import matplotlib.pyplot as plt
+from random import sample
 import csv
 
 def plot_data(csv_file: str) -> None:
@@ -25,7 +28,7 @@ def plot_data(csv_file: str) -> None:
         plt.grid()
         plt.show()
 
-def lagrange_data_plot(csv_file: str, split:int = 2) -> None:
+def lagrange_data_plot(csv_file: str, split:int = 2, even: bool = True) -> None:
     with open(csv_file, "r") as data:
         points = csv.reader(data)
         points: List[List[str]] = [[point[0], point[1]] for point in points]
@@ -47,8 +50,14 @@ def lagrange_data_plot(csv_file: str, split:int = 2) -> None:
             raise ValueError(f"Provided split is too big, max {len(points)}")
 
         split_points = x[0::step][:-1] + [x[-1]]
-
-        f = lagrange_interpolation(points, split)
+        if even:
+            f = lagrange_interpolation(points, split, even)
+        else:
+            split_points = sample(points[1:-1], mid_points)
+            split_points = sorted(split_points, key=lambda point: point.x)
+            split_points = [points[0]] + split_points + [points[-1]]
+            f = lagrange_interpolation_function(split_points)
+            split_points = [point.x for point in split_points]
 
         plt.plot(x, y, label="pomiary")
         plt.plot([split_points[0] + i * 0.01 * (split_points[-1] - split_points[0]) for i in range(101)],\
@@ -62,7 +71,7 @@ def lagrange_data_plot(csv_file: str, split:int = 2) -> None:
         plt.grid()
         plt.show()
 
-def cubic_spline_data_plot(csv_file: str, split:int = 2) -> None:
+def cubic_spline_data_plot(csv_file: str, split:int = 2, even: bool = True) -> None:
     with open(csv_file, "r") as data:
         points = csv.reader(data)
         points: List[List[str]] = [[point[0], point[1]] for point in points]
@@ -85,7 +94,16 @@ def cubic_spline_data_plot(csv_file: str, split:int = 2) -> None:
 
         split_points = x[0::step][:-1] + [x[-1]]
 
-        f = cubic_spline_interpolation(points, split)
+        if even:
+            f = cubic_spline_interpolation(points, split, even)
+        else:
+            split_points = sample(points[1:-1], mid_points)
+            split_points = sorted(split_points, key=lambda point: point.x)
+            split_points = [points[0]] + split_points + [points[-1]]
+            f = cubic_spline_interpolation_function(split_points)
+            split_points = [point.x for point in split_points]
+
+        # f = cubic_spline_interpolation(points, split)
 
         plt.plot(x, y, label="pomiary")
         plt.plot([split_points[0] + i * 0.001 * (split_points[-1] - split_points[0]) for i in range(1001)],\
